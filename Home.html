@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keasto Movie Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .welcome-text {
+            text-align: center;
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .movies-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .movie-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 200px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .movie-card img {
+            width: 100%;
+            height: auto;
+        }
+        .movie-card h2 {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #333;
+        }
+        .movie-card p {
+            margin: 0;
+            color: #777;
+            font-size: 14px;
+        }
+        .about-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .about-section h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .about-section p {
+            font-size: 1em;
+            color: #555;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Keasto Movie Finder</h1>
+
+<div class="welcome-text"> 
+    <p>Welcome to Keasto Movie Finder! Search for your favorite movies below.</p>
+</div>
+
+<div class="search-bar">
+    <input type="text" id="search-input" placeholder="Search for a movie...">
+    <button onclick="searchMovies()">Search</button>
+</div>
+
+<div id="movies-container" class="movies-grid"></div>
+
+<div class="about-section">
+    <h2>About the Creator</h2>
+    <p>This website was created by <link> <a href="https://www.instagram.com/keabetswemakunyane12?igsh=ZXVuOXk3ampnemM5">Keabetswe Makunyane</a></link> , a passionate web developer who loves movies and coding.</p>
+    <h4>Note:</h4><p>Please note that this website does not allow you to download movies. It was created solely for the purpose of showcasing popular movies and providing information about them. Our goal is to offer an easy and enjoyable way for users to discover new and trending films. We respect the rights of content creators and do not provide any links or methods to download or distribute copyrighted material. This platform is intended to help movie enthusiasts stay informed about the latest releases and enjoy a comprehensive browsing experience, but all movie content must be accessed through legal and authorized channels.</p>
+</div>
+
+<script>
+    const API_KEY = '0223e5efb4fdd1cb9e9cd36c22aaed24'; // Replace with your actual API key
+    const API_URL = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
+
+    // Fetch and display popular movies on page load
+    fetch(API_URL)
+        .then(response => response.json())
+        .then(data => displayMovies(data.results))
+        .catch(error => console.error('Error fetching movies:', error));
+
+    // Function to search for movies
+    function searchMovies() {
+        const query = document.getElementById('search-input').value;
+        const SEARCH_API_URL = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`;
+
+        fetch(SEARCH_API_URL)
+            .then(response => response.json())
+            .then(data => {
+                if (data.results.length === 0) {
+                    alert('No movies found!');
+                } else {
+                    displayMovies(data.results);
+                }
+            })
+            .catch(error => console.error('Error searching movies:', error));
+    }
+
+    // Function to display movies
+    function displayMovies(movies) {
+        const moviesContainer = document.getElementById('movies-container');
+        moviesContainer.innerHTML = ''; // Clear previous results
+
+        movies.forEach(movie => {
+            const movieCard = document.createElement('div');
+            movieCard.className = 'movie-card';
+
+            movieCard.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                <h2>${movie.title}</h2>
+                <p>Rating: ${movie.vote_average}</p>
+            `;
+
+            moviesContainer.appendChild(movieCard);
+        });
+    }
+</script>
+
+</body>
+</html>
